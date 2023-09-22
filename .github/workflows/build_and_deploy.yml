@@ -22,6 +22,10 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: 18
+    - name: Authenticate with GitHub Packages(1/2)
+      run: echo "@katonobu:registry=https://npm.pkg.github.com" > ~/.npmrc
+    - name: Authenticate with GitHub Packages(2/2)
+      run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.JS_SERIAL_NPM_ACCESS_TOKEN }}" >> ~/.npmrc
     - name: Install NPM packages
       run: npm ci
     - name: Build
