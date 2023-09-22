@@ -30,12 +30,6 @@ declare class PortOption extends HTMLOptionElement {
 
 let portSelector: HTMLSelectElement;
 let connectButton: HTMLButtonElement;
-let baudRateSelector: HTMLSelectElement;
-let customBaudRateInput: HTMLInputElement;
-let dataBitsSelector: HTMLSelectElement;
-let paritySelector: HTMLSelectElement;
-let stopBitsSelector: HTMLSelectElement;
-let flowControlCheckbox: HTMLInputElement;
 let echoCheckbox: HTMLInputElement;
 let flushOnEnterCheckbox: HTMLInputElement;
 let autoconnectCheckbox: HTMLInputElement;
@@ -193,16 +187,6 @@ async function getSelectedPort(): Promise<void> {
 }
 
 /**
- * @return {number} the currently selected baud rate
- */
-function getSelectedBaudRate(): number {
-  if (baudRateSelector.value == 'custom') {
-    return Number.parseInt(customBaudRateInput.value);
-  }
-  return Number.parseInt(baudRateSelector.value);
-}
-
-/**
  * Resets the UI back to the disconnected state.
  */
 function markDisconnected(): void {
@@ -214,12 +198,6 @@ function markDisconnected(): void {
   portSelector.disabled = false;
   connectButton.textContent = 'Connect';
   connectButton.disabled = false;
-  baudRateSelector.disabled = false;
-  customBaudRateInput.disabled = false;
-  dataBitsSelector.disabled = false;
-  paritySelector.disabled = false;
-  stopBitsSelector.disabled = false;
-  flowControlCheckbox.disabled = false;
   portId = undefined;
 }
 
@@ -233,31 +211,14 @@ async function connectToPort(): Promise<void> {
   }
 
   const options = {
-    baudRate: getSelectedBaudRate(),
-    dataBits: Number.parseInt(dataBitsSelector.value),
-    parity: paritySelector.value as ParityType,
-    stopBits: Number.parseInt(stopBitsSelector.value),
-    flowControl:
-        flowControlCheckbox.checked ? <const> 'hardware' : <const> 'none',
+    baudRate: 115200,
     bufferSize,
-
-    // Prior to Chrome 86 these names were used.
-    baudrate: getSelectedBaudRate(),
-    databits: Number.parseInt(dataBitsSelector.value),
-    stopbits: Number.parseInt(stopBitsSelector.value),
-    rtscts: flowControlCheckbox.checked,
   };
   console.log(options);
 
   portSelector.disabled = true;
   connectButton.textContent = 'Connecting...';
   connectButton.disabled = true;
-  baudRateSelector.disabled = true;
-  customBaudRateInput.disabled = true;
-  dataBitsSelector.disabled = true;
-  paritySelector.disabled = true;
-  stopBitsSelector.disabled = true;
-  flowControlCheckbox.disabled = true;
 
   const openResult = await jsw.openPort(portId, {serialOpenOptions:options})
   if ( openResult === "OK"){
@@ -337,21 +298,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
-  baudRateSelector = document.getElementById('baudrate') as HTMLSelectElement;
-  baudRateSelector.addEventListener('input', () => {
-    if (baudRateSelector.value == 'custom') {
-      customBaudRateInput.hidden = false;
-    } else {
-      customBaudRateInput.hidden = true;
-    }
-  });
-
-  customBaudRateInput =
-      document.getElementById('custom_baudrate') as HTMLInputElement;
-  dataBitsSelector = document.getElementById('databits') as HTMLSelectElement;
-  paritySelector = document.getElementById('parity') as HTMLSelectElement;
-  stopBitsSelector = document.getElementById('stopbits') as HTMLSelectElement;
-  flowControlCheckbox = document.getElementById('rtscts') as HTMLInputElement;
   echoCheckbox = document.getElementById('echo') as HTMLInputElement;
   flushOnEnterCheckbox =
       document.getElementById('enter_flush') as HTMLInputElement;
