@@ -5,7 +5,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/GoogleChromeLabs/serial-terminal.git"
+    "url": "https://github.com/katonobu/ble-serial-terminal"
   },
   "dependencies": {
     "@katonobu/js-ble-web": "0.0.2",
